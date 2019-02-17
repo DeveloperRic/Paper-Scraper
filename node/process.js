@@ -1,5 +1,20 @@
 const stopWord = require("./stopword");
 
+const provisionedFiles = [];
+
+exports.provisionFile = function() {
+  provisionedFiles.push("uploads/upload" + provisionedFiles.length + ".pdf");
+  return provisionedFiles[provisionedFiles.length - 1];
+};
+
+exports.freeFile = function(path) {
+  for (let i = 0; i < provisionedFiles.length; i++) {
+    if (provisionedFiles[i] == path) {
+      return provisionedFiles.splice(i, 1);
+    }
+  }
+};
+
 exports.mapKeywords = function(lines, q) {
   // do ur work here
   let regex = /[A-Z][a-z']+(?: [A-Z][a-z]+)*/;
