@@ -16,24 +16,35 @@ class Word {
   getTemplate(highestFrequency) {
     return `<li style="font-size: ${this.getFontSize(
       highestFrequency
-    )}px"><a href="/chips">${this.text}</a></li>`;
+    )}px"><a href="https://www.google.com/search?q=${this.text}">${
+      this.text
+    }</a></li>`;
   }
 }
 
-function init(data) {
+function run(data) {
   data = [
     { text: "Salt", frequency: 11 },
     { text: "Vinegar", frequency: 11 },
-    { text: "Chips", frequency: 11 }
+    { text: "Chips", frequency: 1100 }
   ];
   data.forEach(d => {
     words.push(new Word(d.text, d.frequency));
   });
+  populateList();
 }
 
 function populateList() {
   let targetList = document.getElementById("target-list");
   targetList.innerHTML = "";
+
+  function findHighestFrequency() {
+    let max = 0;
+    words.forEach(word => {
+      if (word.frequency > max) max = word.frequency;
+    });
+    return max;
+  }
 
   let highestFrequency = findHighestFrequency();
   for (let i = 0; i < words.length; i++) {
@@ -41,10 +52,17 @@ function populateList() {
   }
 }
 
-function findHighestFrequency() {
-  let max = 0;
-  words.forEach(word => {
-    if (word.frequency > max) max = word.frequency;
-  });
-  return max;
-}
+var client = angular.module("client", []);
+
+client.run(function($rootScope) {
+  console.log("Get /pdfToText\n");
+  $.get("/pdfToText")
+    .done(map => {
+      console.log(map);
+    })
+    .fail(function(xhr, textStatus, error) {
+      console.log(xhr.responseText);
+    });
+});
+
+run();
