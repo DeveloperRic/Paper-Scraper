@@ -8,6 +8,7 @@ const process = require("./node/process");
 
 var app = express();
 
+app.use("/html", express.static("./html"));
 app.use("/css", express.static("./css"));
 app.use("/fonts", express.static("./fonts"));
 app.use("/images", express.static("./images"));
@@ -23,7 +24,7 @@ app.route("/pdfToText").get((req, res) => {
     "./node/pdf-file.pdf",
     err => res.status(500).send(err),
     lines => {
-      res.send(process.mapKeywords(lines));
+      res.send(process.mapKeywords(lines, req.query.q));
     }
   );
 });

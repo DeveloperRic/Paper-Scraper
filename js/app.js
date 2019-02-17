@@ -22,19 +22,16 @@ class Word {
   }
 }
 
-function run(data) {
-  data = [
-    { text: "Salt", frequency: 11 },
-    { text: "Vinegar", frequency: 11 },
-    { text: "Chips", frequency: 1100 }
-  ];
+function run($rootScope, $interval, data) {
+  while (words.length > 0) words.splice(0, 1);
   data.forEach(d => {
-    words.push(new Word(d.text, d.frequency));
+    console.log("Running parse on " + JSON.stringify(d));
+    words.push(new Word(d.k, d.v));
   });
-  populateList();
+  populateList($rootScope, $interval);
 }
 
-function populateList() {
+function populateList($rootScope, $interval) {
   let targetList = document.getElementById("target-list");
   targetList.innerHTML = "";
 
@@ -50,19 +47,55 @@ function populateList() {
   for (let i = 0; i < words.length; i++) {
     targetList.innerHTML += words[i].getTemplate(highestFrequency);
   }
+
+  function update() {
+    try {
+      TagCanvas.Start("myCanvas", "tags", {
+        textFont: 'Charcoal,"Helvetica Inserat",sans-serif',
+        textColour: "white",
+        outlineColour: "#ff00ff",
+        reverse: true,
+        depth: 0.8,
+        textHeight: 25,
+        maxSpeed: 0.05,
+        weight: true,
+        dragControl: true
+      });
+    } catch (e) {
+      // something went wrong, hide the canvas container
+      document.getElementById("myCanvasContainer").style.display = "none";
+    }
+  }
+
+  $rootScope.doneLoadingCanvas = true;
+  $rootScope.searchOpen = false;
+  $rootScope.$apply();
+  $interval(() => update(), 0, 1);
 }
 
 var client = angular.module("client", []);
 
-client.run(function($rootScope) {
-  console.log("Get /pdfToText\n");
-  $.get("/pdfToText")
-    .done(map => {
-      console.log(map);
-    })
-    .fail(function(xhr, textStatus, error) {
-      console.log(xhr.responseText);
-    });
+client.run(function($rootScope, $interval) {
+  $rootScope.canvasLength = window.innerWidth;
+  $rootScope.searchOpen = true;
+  $rootScope.searchQuery = "";
+  $rootScope.search = () => {
+    console.log("Get /pdfToText\n");
+    $.get("/pdfToText", { q: $rootScope.searchQuery })
+      .done(map => {
+        run($rootScope, $interval, map);
+      })
+      .fail(function(xhr, textStatus, error) {
+        console.log(xhr.responseText);
+      });
+  };
+  $rootScope.openSearch = () => {
+    $rootScope.searchOpen = true;
+  };
 });
 
-run();
+// run([
+//   { k: "Salt", v: 11 },
+//   { k: "Vinegar", v: 11 },
+//   { k: "Chips", v: 1100 }
+// ]);
