@@ -1328,7 +1328,7 @@ body {
 	border: 2px solid #424242;
 	background: rgba(66, 66, 66, 0.5);
 }
-.header div i {
+.header .small i {
 	display: flex;
 	align-items: center;
 	cursor: pointer;
@@ -1342,6 +1342,9 @@ body {
 label {
   margin-left: 10px;
 	font-size: 14px;
+}
+.header p {
+  font-size: 14px;
 }
 .wordCloud {
   display: flex;
@@ -1368,4 +1371,30 @@ label {
 .loading-animation {
   animation: _status-box-rotation 1.5s infinite;
   /* color: #4caf50; */
+}
+
+#tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+#tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 105%;
+}
+
+#tooltip:hover .tooltiptext {
+  visibility: visible;
 }
