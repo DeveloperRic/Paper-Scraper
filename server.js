@@ -7,7 +7,7 @@ const formidable = require("formidable");
 const textParse = require("./node/textPerser");
 const process = require("./node/process");
 
-var app = express();
+var app = express(); 
 
 app.use("/html", express.static("./html"));
 app.use("/css", express.static("./css"));
