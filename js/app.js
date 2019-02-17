@@ -76,7 +76,11 @@ function populateList($rootScope, $interval) {
 
 var client = angular.module("client", []);
 
+var rootScope, interval;
+
 client.run(function($rootScope, $interval) {
+  rootScope = $rootScope;
+  interval = $interval;
   $rootScope.canvasWidth = window.innerWidth;
   $rootScope.canvasHeight = window.innerHeight;
   $rootScope.searchOpen = true;
@@ -84,14 +88,7 @@ client.run(function($rootScope, $interval) {
   $rootScope.search = () => {
     $rootScope.searchOpen = false;
     $rootScope.searching = true;
-    console.log("Get /pdfToText\n");
-    $.get("/pdfToText", { q: $rootScope.searchQuery })
-      .done(map => {
-        run($rootScope, $interval, map);
-      })
-      .fail(function(xhr, textStatus, error) {
-        console.log(xhr.responseText);
-      });
+    doCloudRequest();
   };
   $rootScope.openSearch = () => {
     $rootScope.searchOpen = true;
@@ -104,8 +101,43 @@ client.run(function($rootScope, $interval) {
 function onFileChoose(files) {
   console.log("got event");
   if (files.length > 0) {
+    let formData = new FormData();
+    let found = false;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      if (!file.type.match("application/pdf")) {
+        continue;
+      }
+      found = true;
+      formData.append("file", file, file.name);
+      break;
+    }
+    if (!found) return;
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "uploadFile", true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log("Successful upload");
+        doCloudRequest();
+      } else {
+        console.log(xhr.responseText);
+      }
+    };
+    console.log("sending...");
+    xhr.send(formData);
     console.log(files[0]);
   }
+}
+
+function doCloudRequest() {
+  console.log("Get /pdfToText\n");
+  $.get("/pdfToText", { q: rootScope.searchQuery })
+    .done(map => {
+      run(rootScope, interval, map);
+    })
+    .fail(function(xhr, textStatus, error) {
+      console.log(xhr.responseText);
+    });
 }
 
 // run([

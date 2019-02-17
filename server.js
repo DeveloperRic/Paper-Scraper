@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const pdf = require("pdf-parse");
+const formidable = require("formidable");
 
 const textParse = require("./node/textPerser");
 const process = require("./node/process");
@@ -19,14 +20,31 @@ app.route("/clientJs").get((req, res) => {
   res.sendFile("client.js", { root: "./" });
 });
 
+app.route("/uploadFile").post((req, res) => {
+  let form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    if (err) return res.status(500).send(err);
+    var oldpath = files.file.path;
+    var newpath = "uploads/pdfFile.pdf";
+    fs.rename(oldpath, newpath, function(err) {
+      if (err) return res.status(500).send(err);
+      console.log("Success");
+      res.sendStatus(200);
+    });
+  });
+});
+
 app.route("/pdfToText").get((req, res) => {
-  loadPdf(
-    "./node/pdf-file.pdf",
-    err => res.status(500).send(err),
-    lines => {
-      res.send(process.mapKeywords(lines, req.query.q));
-    }
-  );
+  fs.exists("./uploads/pdfFile.pdf", exists => {
+    let file = exists ? "./uploads/pdfFile.pdf" : "./node/pdf-file.pdf";
+    loadPdf(
+      file,
+      err => res.status(500).send(err),
+      lines => {
+        res.send(process.mapKeywords(lines, req.query.q));
+      }
+    );
+  });
 });
 
 function loadPdf(name, error, success) {

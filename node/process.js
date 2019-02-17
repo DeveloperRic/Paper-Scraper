@@ -1,3 +1,5 @@
+const stopWord = require("./stopword");
+
 exports.mapKeywords = function(lines, q) {
   // do ur work here
   let regex = /[A-Z][a-z']+(?: [A-Z][a-z]+)*/;
@@ -7,6 +9,7 @@ exports.mapKeywords = function(lines, q) {
     if (usableString(line, q)) {
       let keywords = line.match(regex);
       if (!!keywords) {
+        keywords = stopWord.run(keywords);
         keywords.forEach(keyword => {
           keyword = keyword.trim();
           if (usableKeyword(keyword)) {
@@ -26,8 +29,9 @@ function usableString(str, q) {
   return true;
 }
 
-function usableKeyword(keyword) {
+function usableKeyword(keyword, q) {
   if (keyword.length < 3) return false;
+  if (keyword.includes(q)) return false;
   if (keyword.includes(" ") && keyword.split(" ").length > 4) return false;
   return true;
 }
