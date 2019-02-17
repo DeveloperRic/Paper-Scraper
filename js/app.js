@@ -91,7 +91,10 @@ client.run(function($rootScope, $interval) {
   $rootScope.doCloudRequest = () => {
     $rootScope.searching = true;
     $rootScope.searchOpen = false;
-    $rootScope.$apply();
+    try {
+      $rootScope.$apply();
+    } catch (error) {
+    }
     let q = document.getElementById("searchQuery").value;
     console.log("Get /pdfToText");
     console.log(".. with q = " + q + "\n");
