@@ -31,19 +31,21 @@
     <link rel="stylesheet" href="css/main.css" />
     <div class="header">
       <div ng-if="!searchOpen" ng-click="openSearch()">
-        <i class="material-icons">search</i>
+        <i ng-if="searching" class="material-icons">search</i>
       </div>
       <div ng-if="searchOpen">
         <header id="header">
+          <i class="loading-animation material-icons">autorenew</i>
           <h2>Smash Books</h2>
           <p>Finding the book that is right for you.</p>
         </header>
         <form class="center" id="signup-form" ng-submit="search()">
           <input type="text" ng-model="searchQuery" name="bookName" />
           <input type="submit" value="Search" />
-          <label id="coolButton"
-            >Choose File<input type="file" style="position: fixed; top: -100em"
-          /></label>
+          <label id="coolButton">
+            Choose File
+            <input type="file" style="position: fixed; top: -100em" />
+          </label>
         </form>
       </div>
     </div>
@@ -51,9 +53,9 @@
       <div>
         <canvas
           id="myCanvas"
-          class="fill-height purple-small"
-          width="{{ canvasLength }}"
-          height="{{ canvasLength }}"
+          class="purple-small"
+          width="{{ canvasWidth }}"
+          height="{{ canvasHeight }}"
           style="border:0px solid #ffffff00;"
         >
           <div id="tags">

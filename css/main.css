@@ -227,10 +227,6 @@ body {
 body.is-preload *,
 body.is-preload *:before,
 body.is-preload *:after {
-  -moz-animation: none !important;
-  -webkit-animation: none !important;
-  -ms-animation: none !important;
-  animation: none !important;
   -moz-transition: none !important;
   -webkit-transition: none !important;
   -ms-transition: none !important;
@@ -1305,7 +1301,8 @@ button:disabled,
 	margin-left: 10px;
   text-align: center;
   padding-top: 5px;
-  padding-bottom: 5px;
+	padding-bottom: 5px;
+	cursor: pointer;
 }
 
 body {
@@ -1350,10 +1347,6 @@ label {
   justify-content: center;
   align-content: center;
 }
-.wordCloud canvas {
-  width: 600px;
-  height: 600px;
-}
 .fill-height {
   flex: 1;
   height: 100%;
@@ -1361,4 +1354,15 @@ label {
 #myCanvas {
   border: 0px solid #ff050571;
   background-color: rgba(160, 0, 0, 0);
+}
+
+@keyframes _status-box-rotation {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-animation {
+  animation: _status-box-rotation 1.5s infinite;
+  /* color: #4caf50; */
 }

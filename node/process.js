@@ -3,10 +3,12 @@ exports.mapKeywords = function(lines, q) {
   let regex = /[A-Z][a-z']+(?: [A-Z][a-z]+)*/;
   let map = {};
   lines.forEach(line => {
+    line = line.trim();
     if (usableString(line, q)) {
       let keywords = line.match(regex);
       if (!!keywords) {
         keywords.forEach(keyword => {
+          keyword = keyword.trim();
           if (usableKeyword(keyword)) {
             if (!!map[keyword]) map[keyword]++;
             else map[keyword] = 1;
@@ -25,9 +27,9 @@ function usableString(str, q) {
 }
 
 function usableKeyword(keyword) {
-  let spaces = keyword.match(/,/g);
-  if (!!!spaces || spaces.length <= 4) return true;
-  return false;
+  if (keyword.length < 3) return false;
+  if (keyword.includes(" ") && keyword.split(" ").length > 4) return false;
+  return true;
 }
 
 function sort(map) {

@@ -1,4 +1,4 @@
-const BASE_FONT_SIZE = 25;
+const BASE_FONT_SIZE = 50;
 
 const words = [];
 
@@ -10,15 +10,15 @@ class Word {
   }
 
   getFontSize(highestFrequency) {
-    return BASE_FONT_SIZE * (1 + this.frequency / highestFrequency);
+    return BASE_FONT_SIZE * (this.frequency / highestFrequency);
   }
 
   getTemplate(highestFrequency) {
     return `<li style="font-size: ${this.getFontSize(
       highestFrequency
-    )}px"><a href="https://www.google.com/search?q=${this.text}">${
+    )}px"><a href="https://en.wikipedia.org/wiki/${
       this.text
-    }</a></li>`;
+    }" target="_blank">${this.text}</a></li>`;
   }
 }
 
@@ -49,6 +49,7 @@ function populateList($rootScope, $interval) {
   }
 
   function update() {
+    console.log($rootScope.canvasWidth, $rootScope.canvasHeight);
     try {
       TagCanvas.Start("myCanvas", "tags", {
         textFont: 'Charcoal,"Helvetica Inserat",sans-serif',
@@ -68,7 +69,7 @@ function populateList($rootScope, $interval) {
   }
 
   $rootScope.doneLoadingCanvas = true;
-  $rootScope.searchOpen = false;
+  $rootScope.searching = false;
   $rootScope.$apply();
   $interval(() => update(), 0, 1);
 }
@@ -76,10 +77,13 @@ function populateList($rootScope, $interval) {
 var client = angular.module("client", []);
 
 client.run(function($rootScope, $interval) {
-  $rootScope.canvasLength = window.innerWidth;
+  $rootScope.canvasWidth = window.innerWidth;
+  $rootScope.canvasHeight = window.innerHeight;
   $rootScope.searchOpen = true;
   $rootScope.searchQuery = "";
   $rootScope.search = () => {
+    $rootScope.searchOpen = false;
+    $rootScope.searching = true;
     console.log("Get /pdfToText\n");
     $.get("/pdfToText", { q: $rootScope.searchQuery })
       .done(map => {
@@ -91,6 +95,9 @@ client.run(function($rootScope, $interval) {
   };
   $rootScope.openSearch = () => {
     $rootScope.searchOpen = true;
+  };
+  $rootScope.openWiki = url => {
+    window.open(url);
   };
 });
 
