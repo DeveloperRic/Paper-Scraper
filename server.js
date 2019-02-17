@@ -7,7 +7,7 @@ const formidable = require("formidable");
 const textParse = require("./node/textPerser");
 const process = require("./node/process");
 
-var app = express();
+var app = express(); 
 
 app.use("/html", express.static("./html"));
 app.use("/css", express.static("./css"));
@@ -29,12 +29,9 @@ app.route("/uploadFile").post((req, res) => {
   form.parse(req, function(err, fields, files) {
     if (err) return res.status(500).send(err);
     var oldpath = files.file.path;
-    var newpath = process.provisionFile();
+    var newpath = "uploads/pdfFile.pdf";
     fs.rename(oldpath, newpath, function(err) {
-      process.freeFile(newpath);
-      if (err) {
-        return res.status(500).send(err);
-      }
+      if (err) return res.status(500).send(err);
       console.log("Success");
       res.sendStatus(200);
     });
