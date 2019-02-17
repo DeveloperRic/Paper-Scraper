@@ -1,4 +1,5 @@
 runtime: nodejs8
 instance_class: B2
 basic_scaling:
-  max_concurrent_requests: 20
+  max_instances: 11
+  idle_timeout: 10m
