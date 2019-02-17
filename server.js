@@ -16,6 +16,10 @@ app.use("/images", express.static("./images"));
 app.use("/js", express.static("./js"));
 app.use("/sass", express.static("./sass"));
 
+app.route("/favicon.ico").get((req, res) => {
+  res.sendFile("favicon.ico", { root: "./images" });
+});
+
 app.route("/clientJs").get((req, res) => {
   res.sendFile("client.js", { root: "./" });
 });
