@@ -86,9 +86,22 @@ client.run(function($rootScope, $interval) {
   $rootScope.searchOpen = true;
   $rootScope.searchQuery = "";
   $rootScope.search = () => {
-    $rootScope.searchOpen = false;
+    $rootScope.doCloudRequest();
+  };
+  $rootScope.doCloudRequest = () => {
     $rootScope.searching = true;
-    doCloudRequest();
+    $rootScope.searchOpen = false;
+    $rootScope.$apply();
+    let q = document.getElementById("searchQuery").value;
+    console.log("Get /pdfToText");
+    console.log(".. with q = " + q + "\n");
+    $.get("/pdfToText", { q: q.trim() })
+      .done(map => {
+        run($rootScope, $interval, map);
+      })
+      .fail(function(xhr, textStatus, error) {
+        console.log(xhr.responseText);
+      });
   };
   $rootScope.openSearch = () => {
     $rootScope.searchOpen = true;
@@ -118,7 +131,7 @@ function onFileChoose(files) {
     xhr.onload = function() {
       if (xhr.status === 200) {
         console.log("Successful upload");
-        doCloudRequest();
+        rootScope.doCloudRequest();
       } else {
         console.log(xhr.responseText);
       }
@@ -127,17 +140,6 @@ function onFileChoose(files) {
     xhr.send(formData);
     console.log(files[0]);
   }
-}
-
-function doCloudRequest() {
-  console.log("Get /pdfToText\n");
-  $.get("/pdfToText", { q: rootScope.searchQuery })
-    .done(map => {
-      run(rootScope, interval, map);
-    })
-    .fail(function(xhr, textStatus, error) {
-      console.log(xhr.responseText);
-    });
 }
 
 // run([

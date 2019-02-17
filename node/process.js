@@ -9,10 +9,11 @@ exports.mapKeywords = function(lines, q) {
     if (usableString(line, q)) {
       let keywords = line.match(regex);
       if (!!keywords) {
+        keywords = parseKeywords(keywords);
         keywords = stopWord.run(keywords);
         keywords.forEach(keyword => {
           keyword = keyword.trim();
-          if (usableKeyword(keyword)) {
+          if (usableKeyword(keyword, q)) {
             if (!!map[keyword]) map[keyword]++;
             else map[keyword] = 1;
           }
@@ -25,13 +26,21 @@ exports.mapKeywords = function(lines, q) {
 
 function usableString(str, q) {
   if (str.length < 3) return false;
-  if (!!q && !str.includes(q)) return false;
+  if (q != "" && !str.includes(q)) return false;
   return true;
+}
+
+function parseKeywords(keywords) {
+  let arr = [];
+  keywords.forEach(k => {
+    arr.push("" + k);
+  });
+  return arr;
 }
 
 function usableKeyword(keyword, q) {
   if (keyword.length < 3) return false;
-  if (keyword.includes(q)) return false;
+  if (q != "" && keyword.includes(q)) return false;
   if (keyword.includes(" ") && keyword.split(" ").length > 4) return false;
   return true;
 }

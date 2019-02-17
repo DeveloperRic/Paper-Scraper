@@ -1304,6 +1304,9 @@ button:disabled,
 	padding-bottom: 5px;
 	cursor: pointer;
 }
+#coolButton:hover {
+	background-color: #1fcaa7;
+}
 
 body {
 	background: #212121;

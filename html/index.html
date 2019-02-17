@@ -34,17 +34,17 @@
         <i ng-if="searching" class="loading-animation material-icons">autorenew</i>
         <i ng-if="!searching" class="material-icons">search</i>
       </div>
-      <div ng-if="searchOpen">
+      <div ng-show="searchOpen">
         <header id="header">
           <h2>Smash Books</h2>
           <p>Finding the book that is right for you.</p>
         </header>
         <form class="center" id="signup-form" ng-submit="search()">
-          <input type="text" ng-model="searchQuery" name="bookName" />
+          <input id="searchQuery" type="text" ng-model="searchQuery" name="searchQuery" />
           <input type="submit" value="Search" />
           <label id="coolButton">
             Choose File
-            <input type="file" onchange="onFileChoose(this.files)" name="fileUpload" style="position: fixed; top: -100em" />
+            <input type="file" onchange="onFileChoose(this.files)" style="position: fixed; top: -100em" />
           </label>
         </form>
       </div>
