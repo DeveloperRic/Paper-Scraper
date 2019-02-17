@@ -101,6 +101,13 @@ client.run(function($rootScope, $interval) {
   };
 });
 
+function onFileChoose(files) {
+  console.log("got event");
+  if (files.length > 0) {
+    console.log(files[0]);
+  }
+}
+
 // run([
 //   { k: "Salt", v: 11 },
 //   { k: "Vinegar", v: 11 },
